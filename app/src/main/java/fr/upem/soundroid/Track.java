@@ -35,14 +35,16 @@ public class Track implements Comparable<Track>, Serializable {
 
     public static Track fromPath(String path) {
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
-            mmr.setDataSource(path);
-            Track t = new Track(path,
-                    mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
-                    mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
-                    mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
-                    Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER))
-            );
-            return t;
+        mmr.setDataSource(path);
+        String s = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
+        int num = (s == null || s.isEmpty()) ? 0 : Integer.parseInt(s);
+        Track t = new Track(path,
+                mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
+                mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
+                mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
+                num
+        );
+        return t;
     }
 
     public static List<Track> deSerialize(File file) throws IOException, ClassNotFoundException {
