@@ -1,7 +1,6 @@
 package fr.upem.soundroid;
 
 import android.media.MediaMetadataRetriever;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -12,6 +11,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +23,14 @@ public class Track implements Comparable<Track>, Serializable {
     private final String title;
     private final String author;
     private final String album;
+    private final int count;
 
-    private Track(String path, String title, String author, String album) {
+    private Track(String path, String title, String author, String album, int count) {
         this.path = path;
         this.title = title;
         this.author = author;
         this.album = album;
+        this.count = count;
     }
 
     public static Track fromPath(String path) {
@@ -37,7 +39,8 @@ public class Track implements Comparable<Track>, Serializable {
             Track t = new Track(path,
                     mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
                     mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
-                    mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM)
+                    mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
+                    Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER))
             );
             return t;
     }
@@ -115,13 +118,15 @@ public class Track implements Comparable<Track>, Serializable {
     @Override
     public int compareTo(Track o) {
         int res;
-        res = path.compareTo(o.path);
-        if (res != 0) return res;
-        res = title.compareTo(o.title);
-        if (res != 0) return res;
         res = author.compareTo(o.author);
         if (res != 0) return res;
         res = album.compareTo(o.album);
+        if (res != 0) return res;
+        res = count - o.count;
+        if (res != 0) return res;
+        res = title.compareTo(o.title);
+        if (res != 0) return res;
+        res = path.compareTo(o.path);
         if (res != 0) return res;
         return 0;
     }
@@ -130,5 +135,16 @@ public class Track implements Comparable<Track>, Serializable {
     @Override
     public String toString() {
         return author + " - " + title;
+    }
+
+    private static String removeAccentsUpper(String src) {
+        return Normalizer.normalize(src, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
+    }
+
+    public boolean filter(String filter) {
+        String s = removeAccentsUpper(filter);
+        return removeAccentsUpper(title).contains(s)
+                || removeAccentsUpper(album).contains(s)
+                || removeAccentsUpper(author).contains(s);
     }
 }
