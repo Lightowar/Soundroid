@@ -3,6 +3,7 @@ package fr.upem.soundroid;
 import android.media.MediaMetadataRetriever;
 
 import androidx.annotation.NonNull;
+import androidx.core.util.Consumer;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,7 +38,7 @@ public class Track implements Comparable<Track>, Serializable {
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         mmr.setDataSource(path);
         String s = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
-        int num = (s == null || s.isEmpty()) ? 0 : Integer.parseInt(s);
+        int num = (s == null || s.isEmpty()) ? -1 : Integer.parseInt(s);
         Track t = new Track(path,
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
@@ -68,6 +69,17 @@ public class Track implements Comparable<Track>, Serializable {
             }
         }
         return lst;
+    }
+
+    public static void index(File root, Consumer<Track> consumer) {
+        File[] files = root.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                index(file, consumer);
+            } else if (file.getName().endsWith(".mp3")) {
+                consumer.accept(fromPath(file.getAbsolutePath()));
+            }
+        }
     }
 
     public static List<Track> index(String root) {

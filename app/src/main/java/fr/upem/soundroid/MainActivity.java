@@ -1,5 +1,7 @@
 package fr.upem.soundroid;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
@@ -7,27 +9,34 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Environment;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -35,21 +44,19 @@ import com.google.android.material.snackbar.Snackbar;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 0;
-
     public final static String FILE = "tracks";
 
-    private List<Track> tracks;
+    private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 0;
 
+    private List<Track> tracks = new ArrayList<>();
     private AppBarConfiguration mAppBarConfiguration;
+    private RecyclerView recyclerView;
+    private TrackAdapter trackAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (!load())
-            premissionScan();
-        after();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
@@ -71,7 +78,24 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
-        scan();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+
+        if (!load())
+            permissionScan();
+
+        findViewById(R.id.floatingActionButton).setOnClickListener(v -> {
+            tracks.clear();
+            permissionScan();
+        });
+
+        recyclerView = findViewById(R.id.recyclerView);
+        trackAdapter = new TrackAdapter(tracks);
+        recyclerView.setAdapter(trackAdapter);
+        recyclerView.setLayoutManager(createLayoutManager());
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -88,7 +112,7 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    public void premissionScan() {
+    public void permissionScan() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_STORAGE);
             Toast.makeText(this, "please allow", Toast.LENGTH_SHORT).show();
@@ -104,30 +128,29 @@ public class MainActivity extends AppCompatActivity {
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 scan();
             } else {
-                premissionScan();
+                permissionScan();
             }
         }
     }
 
     private void scan() {
-        tracks = Track.index(Environment.getExternalStorageDirectory());
+        Track.index(Environment.getExternalStorageDirectory(), t -> {
+            tracks.add(t);
+            if (trackAdapter != null) {
+                trackAdapter.notifyDataSetChanged();
+            }
+        });
         try {
-            FileOutputStream fos = openFileOutput(FILE, Context.MODE_PRIVATE);
+            FileOutputStream fos = openFileOutput(FILE, 0);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(tracks);
         } catch (IOException e) {
             Log.e("can't write tracks file", e.toString());
-            return;
         }
     }
 
-    private void after() {
-
-    }
-
     private boolean load() {
-        File file = new File(FILE);
-        if (!file.exists()) return false;
+        if (!Arrays.asList(fileList()).contains(FILE)) return false;
         try {
             FileInputStream fis = openFileInput(FILE);
             ObjectInputStream ois = new ObjectInputStream(fis);
@@ -141,5 +164,9 @@ public class MainActivity extends AppCompatActivity {
             return false;
         }
         return true;
+    }
+
+    private RecyclerView.LayoutManager createLayoutManager() {
+        return new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
     }
 }
