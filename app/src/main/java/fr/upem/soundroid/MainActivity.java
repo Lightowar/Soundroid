@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void scan() {
-        Track.index(Environment.getDataDirectory(), t -> {
+        Track.index(this, t -> {
             tracks.add(t);
             allTracks.add(t);
             if (trackAdapter != null) {

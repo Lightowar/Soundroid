@@ -1,6 +1,11 @@
 package fr.upem.soundroid;
 
+import android.content.Context;
+import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
+import android.net.Uri;
+import android.provider.MediaStore;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
@@ -38,7 +43,7 @@ public class Track implements Comparable<Track>, Serializable {
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         mmr.setDataSource(path);
         String s = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
-        int num = (s == null || s.isEmpty()) ? -1 : Integer.parseInt(s);
+        int num = (s == null || s.isEmpty()) ? 0 : Integer.parseInt(s);
         Track t = new Track(path,
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
@@ -81,6 +86,40 @@ public class Track implements Comparable<Track>, Serializable {
             }
         }
     }
+
+    public static void index(Context context, Consumer<Track> consumer) {
+        Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+        String[] projection = {
+                MediaStore.Audio.AudioColumns.DATA,
+                MediaStore.Audio.AudioColumns.TITLE,
+                MediaStore.Audio.AudioColumns.ALBUM,
+                MediaStore.Audio.ArtistColumns.ARTIST,
+                MediaStore.Audio.AudioColumns.TRACK,
+        };
+        Cursor c = context.getContentResolver().query(uri, projection, "", new String[0], null);
+
+        if (c != null) {
+            while (c.moveToNext()) {
+                String path = c.getString(0);
+                String name = c.getString(1);
+                String album = c.getString(2);
+                String artist = c.getString(3);
+                String trackNumber = c.getString(4);
+
+                Track t = new Track(path, name, artist, album, (trackNumber == null || trackNumber.isEmpty()) ? 0 : Integer.parseInt(trackNumber));
+
+                consumer.accept(t);
+            }
+            c.close();
+        }
+    }
+
+    public static List<Track> index(Context context) {
+        List<Track> lst = new ArrayList<>();
+        index(context, lst::add);
+        return lst;
+    }
+
 
     public static List<Track> index(String root) {
         return index(new File(root));
