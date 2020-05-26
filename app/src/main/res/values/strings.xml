@@ -14,4 +14,7 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="home_second">Home Second</string>
+    <string name="music_title">Music title</string>
+    <string name="album_cover_image_description">Album cover</string>
+    <string name="search_bar_label">Recherche</string>
 </resources>
