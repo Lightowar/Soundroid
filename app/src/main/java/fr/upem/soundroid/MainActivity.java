@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void scan() {
-        Track.index(Environment.getExternalStorageDirectory(), t -> {
+        Track.index(Environment.getDataDirectory(), t -> {
             tracks.add(t);
             allTracks.add(t);
             if (trackAdapter != null) {
