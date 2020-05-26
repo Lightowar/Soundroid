@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
@@ -44,13 +43,12 @@ public class Track implements Comparable<Track>, Serializable {
         mmr.setDataSource(path);
         String s = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
         int num = (s == null || s.isEmpty()) ? 0 : Integer.parseInt(s);
-        Track t = new Track(path,
+        return new Track(path,
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
                 num
         );
-        return t;
     }
 
     public static List<Track> deSerialize(File file) throws IOException, ClassNotFoundException {
@@ -161,11 +159,8 @@ public class Track implements Comparable<Track>, Serializable {
         } else if (!path.equals(other.path))
             return false;
         if (title == null) {
-            if (other.title != null)
-                return false;
-        } else if (!title.equals(other.title))
-            return false;
-        return true;
+            return other.title == null;
+        } else return title.equals(other.title);
     }
 
     @Override
@@ -180,8 +175,7 @@ public class Track implements Comparable<Track>, Serializable {
         res = title.compareTo(o.title);
         if (res != 0) return res;
         res = path.compareTo(o.path);
-        if (res != 0) return res;
-        return 0;
+        return res;
     }
 
     @NonNull
