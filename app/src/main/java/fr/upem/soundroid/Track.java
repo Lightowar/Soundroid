@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Track implements Comparable<Track>, Serializable {
 
@@ -64,7 +65,7 @@ public class Track implements Comparable<Track>, Serializable {
     public static List<Track> index(File root) {
         List<Track> lst = new ArrayList<Track>();
         File[] files = root.listFiles();
-        for (File file : files) {
+        for (File file : Objects.requireNonNull(files)) {
             if (file.isDirectory()) {
                 lst.addAll(index(file));
             } else if (file.getName().endsWith(".mp3")) {
@@ -76,7 +77,7 @@ public class Track implements Comparable<Track>, Serializable {
 
     public static void index(File root, Consumer<Track> consumer) {
         File[] files = root.listFiles();
-        for (File file : files) {
+        for (File file : Objects.requireNonNull(files)) {
             if (file.isDirectory()) {
                 index(file, consumer);
             } else if (file.getName().endsWith(".mp3")) {

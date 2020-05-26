@@ -33,6 +33,7 @@
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
         app:layout_constraintStart_toStartOf="parent"
+        android:importantForAutofill="no"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -43,5 +44,6 @@
         android:clickable="true"
         android:src="@android:drawable/ic_popup_sync"
         app:layout_constraintEnd_toEndOf="parent"
+        android:focusable="true"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
