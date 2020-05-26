@@ -152,6 +152,7 @@ public class Track implements Comparable<Track>, Serializable {
     }
 
     private static String removeAccentsUpper(String src) {
+        if (src == null) return "";
         return Normalizer.normalize(src, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
     }
 

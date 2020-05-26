@@ -11,11 +11,14 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Debug;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.FileInputStream;
@@ -26,6 +29,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -49,9 +53,11 @@ public class MainActivity extends AppCompatActivity {
     private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 0;
 
     private List<Track> tracks = new ArrayList<>();
+    private List<Track> allTracks = new ArrayList<>();
     private AppBarConfiguration mAppBarConfiguration;
     private RecyclerView recyclerView;
     private TrackAdapter trackAdapter;
+    private EditText searchBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +101,29 @@ public class MainActivity extends AppCompatActivity {
         trackAdapter = new TrackAdapter(tracks);
         recyclerView.setAdapter(trackAdapter);
         recyclerView.setLayoutManager(createLayoutManager());
+
+        searchBar = findViewById(R.id.searchBar);
+        searchBar.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s == null) return;
+                tracks.clear();
+                for (Track t : allTracks) {
+                    if (t.filter(s.toString())) tracks.add(t);
+                }
+                trackAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -136,6 +165,7 @@ public class MainActivity extends AppCompatActivity {
     private void scan() {
         Track.index(Environment.getExternalStorageDirectory(), t -> {
             tracks.add(t);
+            allTracks.add(t);
             if (trackAdapter != null) {
                 trackAdapter.notifyDataSetChanged();
             }
@@ -156,6 +186,7 @@ public class MainActivity extends AppCompatActivity {
             ObjectInputStream ois = new ObjectInputStream(fis);
             try {
                 tracks = (List<Track>) ois.readObject();
+                allTracks = new ArrayList<>(tracks);
             } catch (ClassNotFoundException e) {
                 throw new AssertionError();
             }
