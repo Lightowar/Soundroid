@@ -13,10 +13,10 @@ import java.util.List;
 /** Adapter for RecyclerView displaying dessert pictures */
 public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> {
 
-    private List<Track> tracks;
+    private final List<Track> tracks;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        private TextView textView;
+        private final TextView textView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

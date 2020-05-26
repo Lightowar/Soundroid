@@ -39,7 +39,7 @@ public class Track implements Comparable<Track>, Serializable {
         this.count = count;
     }
 
-    public static Track fromPath(String path) {
+    private static Track fromPath(String path) {
         MediaMetadataRetriever mmr = new MediaMetadataRetriever();
         mmr.setDataSource(path);
         String s = mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_CD_TRACK_NUMBER);
@@ -62,8 +62,8 @@ public class Track implements Comparable<Track>, Serializable {
         oos.writeObject(tracks);
     }
 
-    public static List<Track> index(File root) {
-        List<Track> lst = new ArrayList<Track>();
+    private static List<Track> index(File root) {
+        List<Track> lst = new ArrayList<>();
         File[] files = root.listFiles();
         for (File file : Objects.requireNonNull(files)) {
             if (file.isDirectory()) {
@@ -75,7 +75,7 @@ public class Track implements Comparable<Track>, Serializable {
         return lst;
     }
 
-    public static void index(File root, Consumer<Track> consumer) {
+    private static void index(File root, Consumer<Track> consumer) {
         File[] files = root.listFiles();
         for (File file : Objects.requireNonNull(files)) {
             if (file.isDirectory()) {
