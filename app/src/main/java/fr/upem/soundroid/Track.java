@@ -1,20 +1,20 @@
 package fr.upem.soundroid;
 
+import android.content.ComponentName;
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
+import android.os.IBinder;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -30,13 +30,15 @@ public class Track implements Comparable<Track>, Serializable {
     private final String author;
     private final String album;
     private final int count;
+    private final String uri;
 
-    private Track(String path, String title, String author, String album, int count) {
+    private Track(String path, String title, String author, String album, int count, String uri) {
         this.path = path;
         this.title = title;
         this.author = author;
         this.album = album;
         this.count = count;
+        this.uri = uri;
     }
 
     private static Track fromPath(String path) {
@@ -48,18 +50,9 @@ public class Track implements Comparable<Track>, Serializable {
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
-                num
+                num,
+                null
         );
-    }
-
-    public static List<Track> deSerialize(File file) throws IOException, ClassNotFoundException {
-        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
-        return (List<Track>) ois.readObject();
-    }
-
-    public static void serialize(File file, List<Track> tracks) throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file));
-        oos.writeObject(tracks);
     }
 
     private static List<Track> index(File root) {
@@ -94,8 +87,10 @@ public class Track implements Comparable<Track>, Serializable {
                 MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.ArtistColumns.ARTIST,
                 MediaStore.Audio.AudioColumns.TRACK,
+                MediaStore.Audio.AudioColumns._ID,
         };
-        Cursor c = context.getContentResolver().query(uri, projection, "", new String[0], null);
+        Cursor c = context.getContentResolver().query(uri, projection, MediaStore.Audio.AudioColumns.IS_MUSIC + " != 0",
+                new String[0], null);
 
         if (c != null) {
             while (c.moveToNext()) {
@@ -105,7 +100,11 @@ public class Track implements Comparable<Track>, Serializable {
                 String artist = c.getString(3);
                 String trackNumber = c.getString(4);
 
-                Track t = new Track(path, name, artist, album, (trackNumber == null || trackNumber.isEmpty()) ? 0 : Integer.parseInt(trackNumber));
+                Track t = new Track(path, name, artist, album,
+                        (trackNumber == null || trackNumber.isEmpty()) ? 0 : Integer.parseInt(trackNumber),
+                        ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                                c.getInt(c.getColumnIndex(MediaStore.Images.ImageColumns._ID))).toString()
+                );
 
                 consumer.accept(t);
             }
@@ -195,5 +194,9 @@ public class Track implements Comparable<Track>, Serializable {
         return removeAccentsUpper(title).contains(s)
                 || removeAccentsUpper(album).contains(s)
                 || removeAccentsUpper(author).contains(s);
+    }
+
+    public Uri toUri() {
+        return Uri.parse(uri);
     }
 }

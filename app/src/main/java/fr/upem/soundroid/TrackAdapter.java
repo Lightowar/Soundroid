@@ -10,27 +10,33 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
-/** Adapter for RecyclerView displaying dessert pictures */
+/**
+ * Adapter for RecyclerView displaying dessert pictures
+ */
 public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> {
 
     private final List<Track> tracks;
+    private final MusicPlayer player;
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.dessertLabel);
+            textView = itemView.findViewById(R.id.trackLabel);
         }
 
         private void update(Track track) {
             textView.setText(track.toString());
+            if (player != null)
+                itemView.setOnClickListener(v -> player.play(track));
         }
     }
 
-    public TrackAdapter(List<Track> tracks) {
+    public TrackAdapter(List<Track> tracks, MusicPlayer player) {
         super();
         this.tracks = tracks;
+        this.player = player;
     }
 
     public List<Track> getTracks() {

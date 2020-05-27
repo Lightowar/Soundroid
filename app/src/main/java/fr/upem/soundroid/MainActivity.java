@@ -1,6 +1,11 @@
 package fr.upem.soundroid;
 
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.util.Log;
 import android.view.Menu;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +20,23 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MusicPlayer {
     private AppBarConfiguration mAppBarConfiguration;
+
+    private MusicService musicService;
+    private boolean bounded;
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            musicService = ((MusicService.MusicBinder) service).getService();
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            musicService = null;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +58,21 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+
+        Intent intent = new Intent(this, MusicService.class);
+        bindService(intent, connection, BIND_AUTO_CREATE);
+        bounded = true;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (bounded) {
+            unbindService(connection);
+            bounded = false;
+            //stopService(new Intent(this, MusicService.class));
+        }
     }
 
     @Override
@@ -52,5 +87,14 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    public void play(Track t) {
+        Log.d("debug", "ged");
+        if (musicService == null) {
+            Log.e(MainActivity.class.toString(), "no service");
+            return;
+        }
+        musicService.play(t);
     }
 }

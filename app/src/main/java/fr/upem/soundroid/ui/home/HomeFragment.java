@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import fr.upem.soundroid.MainActivity;
 import fr.upem.soundroid.R;
 import fr.upem.soundroid.Track;
 import fr.upem.soundroid.TrackAdapter;
@@ -57,7 +58,7 @@ public class HomeFragment extends Fragment {
         });
 
         recyclerView = root.findViewById(R.id.recyclerView);
-        trackAdapter = new TrackAdapter(tracks);
+        trackAdapter = new TrackAdapter(tracks, (MainActivity)getActivity());
         recyclerView.setAdapter(trackAdapter);
         recyclerView.setLayoutManager(createLayoutManager());
 

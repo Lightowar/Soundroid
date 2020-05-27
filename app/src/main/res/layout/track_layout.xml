@@ -15,7 +15,7 @@
         app:srcCompat="@drawable/ic_menu_gallery" />
 
     <TextView
-        android:id="@+id/dessertLabel"
+        android:id="@+id/trackLabel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="0"
