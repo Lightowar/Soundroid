@@ -14,4 +14,6 @@
     <string name="music_title">Music title</string>
     <string name="album_cover_image_description">Album cover</string>
     <string name="search_bar_label">Recherche</string>
+
+    <string name="current_song_title">Title of the music being played</string>
 </resources>
