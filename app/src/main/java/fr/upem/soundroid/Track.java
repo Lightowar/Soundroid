@@ -1,14 +1,10 @@
 package fr.upem.soundroid;
 
-import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.database.Cursor;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.IBinder;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
