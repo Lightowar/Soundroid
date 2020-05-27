@@ -1,4 +1,4 @@
-package fr.upem.soundroid.ui.slideshow;
+package fr.upem.soundroid.ui.currentMusicTrack;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,14 +11,14 @@ import androidx.lifecycle.ViewModelProviders;
 
 import fr.upem.soundroid.R;
 
-public class SlideshowFragment extends Fragment {
+public class CurrentMusicTrackFragment extends Fragment {
 
-    private SlideshowViewModel slideshowViewModel;
+    private CurrentMusicTrackModel currentMusicTrackModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        slideshowViewModel =
-                ViewModelProviders.of(this).get(SlideshowViewModel.class);
-        return inflater.inflate(R.layout.fragment_slideshow, container, false);
+        currentMusicTrackModel =
+                ViewModelProviders.of(this).get(CurrentMusicTrackModel.class);
+        return inflater.inflate(R.layout.fragment_current_music_track, container, false);
     }
 }
