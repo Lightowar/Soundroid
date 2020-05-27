@@ -12,14 +12,14 @@
     </fragment>
 
     <fragment
+        android:id="@+id/nav_current_music_track"
+        android:name="fr.upem.soundroid.ui.currentMusicTrack.CurrentMusicTrackFragment"
+        android:label="@string/menu_current_music_track"
+        tools:layout="@layout/fragment_current_music_track" />
+
+    <fragment
         android:id="@+id/nav_gallery"
         android:name="fr.upem.soundroid.ui.gallery.GalleryFragment"
         android:label="@string/menu_gallery"
         tools:layout="@layout/fragment_gallery" />
-
-    <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="fr.upem.soundroid.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
 </navigation>

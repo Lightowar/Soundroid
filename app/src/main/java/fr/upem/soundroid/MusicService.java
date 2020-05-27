@@ -1,6 +1,5 @@
 package fr.upem.soundroid;
 
-import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
 import android.media.MediaPlayer;

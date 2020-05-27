@@ -6,12 +6,13 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
+    <string name="menu_home">@string/app_name</string>
     <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_current_music_track">Playing now</string>
 
-    <string name="home_second">Home Second</string>
     <string name="music_title">Music title</string>
     <string name="album_cover_image_description">Album cover</string>
     <string name="search_bar_label">Recherche</string>
+
+    <string name="current_song_title">Title of the song being played</string>
 </resources>

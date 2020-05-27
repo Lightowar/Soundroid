@@ -3,7 +3,6 @@ package fr.upem.soundroid.ui.home;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Debug;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -53,9 +52,7 @@ public class HomeFragment extends Fragment {
                 ViewModelProviders.of(this).get(HomeViewModel.class);
         View root = inflater.inflate(R.layout.fragment_home, container, false);
 
-        root.findViewById(R.id.floatingActionButton).setOnClickListener(v -> {
-            permissionScan();
-        });
+        root.findViewById(R.id.floatingActionButton).setOnClickListener(v -> permissionScan());
 
         recyclerView = root.findViewById(R.id.recyclerView);
         trackAdapter = new TrackAdapter(tracks, (MainActivity)getActivity());
