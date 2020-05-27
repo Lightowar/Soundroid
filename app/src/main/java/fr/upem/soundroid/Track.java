@@ -1,24 +1,25 @@
 package fr.upem.soundroid;
 
-import android.content.ComponentName;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.media.MediaMetadataRetriever;
 import android.net.Uri;
-import android.os.IBinder;
 import android.provider.MediaStore;
 
 import androidx.annotation.NonNull;
 import androidx.core.util.Consumer;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class Track implements Comparable<Track>, Serializable {
@@ -30,15 +31,18 @@ public class Track implements Comparable<Track>, Serializable {
     private final String author;
     private final String album;
     private final int count;
-    private final String uri;
+    private final long albumId;
+    private transient Bitmap bitmap;
 
-    private Track(String path, String title, String author, String album, int count, String uri) {
+    private static Map<Long, Bitmap> map = new HashMap<Long, Bitmap>();
+
+    private Track(String path, String title, String author, String album, int count, long album_id) {
         this.path = path;
         this.title = title;
         this.author = author;
         this.album = album;
         this.count = count;
-        this.uri = uri;
+        this.albumId = album_id;
     }
 
     private static Track fromPath(String path) {
@@ -51,8 +55,7 @@ public class Track implements Comparable<Track>, Serializable {
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
                 num,
-                null
-        );
+                0);
     }
 
     private static List<Track> index(File root) {
@@ -87,7 +90,7 @@ public class Track implements Comparable<Track>, Serializable {
                 MediaStore.Audio.AudioColumns.ALBUM,
                 MediaStore.Audio.ArtistColumns.ARTIST,
                 MediaStore.Audio.AudioColumns.TRACK,
-                MediaStore.Audio.AudioColumns._ID,
+                MediaStore.Audio.AlbumColumns.ALBUM_ID,
         };
         Cursor c = context.getContentResolver().query(uri, projection, MediaStore.Audio.AudioColumns.IS_MUSIC + " != 0",
                 new String[0], null);
@@ -99,12 +102,13 @@ public class Track implements Comparable<Track>, Serializable {
                 String album = c.getString(2);
                 String artist = c.getString(3);
                 String trackNumber = c.getString(4);
+                long albumId = c.getLong(5);
 
                 Track t = new Track(path, name, artist, album,
                         (trackNumber == null || trackNumber.isEmpty()) ? 0 : Integer.parseInt(trackNumber),
-                        ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
-                                c.getInt(c.getColumnIndex(MediaStore.Images.ImageColumns._ID))).toString()
+                        albumId
                 );
+
 
                 consumer.accept(t);
             }
@@ -197,6 +201,27 @@ public class Track implements Comparable<Track>, Serializable {
     }
 
     public Uri toUri() {
-        return Uri.parse(uri);
+        return Uri.parse(path);
+    }
+
+    public Bitmap computeAndGetBitmap(Context c) {
+        if (bitmap != null) return bitmap;
+        if (albumId != 0) {
+            if (map.containsKey(albumId)) return map.get(albumId);
+            Uri sArtworkUri = Uri
+                    .parse("content://media/external/audio/albumart");
+            Uri albumArtUri = ContentUris.withAppendedId(sArtworkUri, albumId);
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(
+                        c.getContentResolver(), albumArtUri);
+                map.put(albumId, bitmap);
+                return bitmap;
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }

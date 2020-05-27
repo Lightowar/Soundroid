@@ -1,8 +1,11 @@
 package fr.upem.soundroid;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,14 +23,24 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
+        private final ImageView imageView;
+        private final Context context;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             textView = itemView.findViewById(R.id.trackLabel);
+            imageView = itemView.findViewById(R.id.trackImage);
+            context = itemView.getContext();
         }
 
         private void update(Track track) {
             textView.setText(track.toString());
+            Bitmap bitmap = track.computeAndGetBitmap(context);
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+            } else {
+                imageView.setImageResource(R.drawable.ic_menu_gallery);
+            }
             if (player != null)
                 itemView.setOnClickListener(v -> player.play(track));
         }
