@@ -1,2 +1,2 @@
-Nicolas Baticle : Programmation de la lecture des musiques, demande des permissions lors du premier démarrage, affichage des pochettes d'album, débuggage et test via terminal Android physique
-Dylan Jolivet : Programmation des menus et interfaces graphiques, débuggage et test via emulateur, embelissement du code, rédaction des documents et documentations
+Nicolas Baticle <nicolas.baticle@gmail.com> : Programmation de la lecture des musiques, demande des permissions lors du premier démarrage, affichage des pochettes d'album, débuggage et test via terminal Android physique
+Dylan Jolivet <dylanjolivet@outlook.fr> : Programmation des menus et interfaces graphiques, débuggage et test via emulateur, embelissement du code, rédaction des documents et documentations
