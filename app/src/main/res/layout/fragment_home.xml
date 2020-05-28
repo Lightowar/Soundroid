@@ -30,10 +30,10 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="@string/search_bar_label"
+        android:importantForAutofill="no"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/floatingActionButton"
         app:layout_constraintStart_toStartOf="parent"
-        android:importantForAutofill="no"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -42,8 +42,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:clickable="true"
+        android:focusable="true"
         android:src="@android:drawable/ic_popup_sync"
         app:layout_constraintEnd_toEndOf="parent"
-        android:focusable="true"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

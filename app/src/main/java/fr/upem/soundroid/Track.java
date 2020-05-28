@@ -25,7 +25,7 @@ import java.util.Objects;
 public class Track implements Comparable<Track>, Serializable {
 
     private static final long serialVersionUID = 4206969694207101685L;
-
+    private static Map<Long, Bitmap> map = new HashMap<Long, Bitmap>();
     private final String path;
     private final String title;
     private final String author;
@@ -34,8 +34,6 @@ public class Track implements Comparable<Track>, Serializable {
     private final int count;
     private final long albumId;
     private transient Bitmap bitmap;
-
-    private static Map<Long, Bitmap> map = new HashMap<Long, Bitmap>();
 
     private Track(String path, String title, String author, String album, String uri, int count, long album_id) {
         this.path = path;
@@ -132,6 +130,11 @@ public class Track implements Comparable<Track>, Serializable {
         return index(new File(root));
     }
 
+    private static String removeAccentsUpper(String src) {
+        if (src == null) return "";
+        return Normalizer.normalize(src, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -191,11 +194,6 @@ public class Track implements Comparable<Track>, Serializable {
     @Override
     public String toString() {
         return author + " - " + title;
-    }
-
-    private static String removeAccentsUpper(String src) {
-        if (src == null) return "";
-        return Normalizer.normalize(src, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").toUpperCase();
     }
 
     public boolean filter(String filter) {

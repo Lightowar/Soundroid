@@ -21,31 +21,6 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
     private final List<Track> tracks;
     private final MusicPlayer player;
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        private final TextView textView;
-        private final ImageView imageView;
-        private final Context context;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            textView = itemView.findViewById(R.id.trackLabel);
-            imageView = itemView.findViewById(R.id.trackImage);
-            context = itemView.getContext();
-        }
-
-        private void update(Track track) {
-            textView.setText(track.toString());
-            Bitmap bitmap = track.computeAndGetBitmap(context);
-            if (bitmap != null) {
-                imageView.setImageBitmap(bitmap);
-            } else {
-                imageView.setImageResource(R.drawable.ic_menu_gallery);
-            }
-            if (player != null)
-                itemView.setOnClickListener(v -> player.play(track));
-        }
-    }
-
     public TrackAdapter(List<Track> tracks, MusicPlayer player) {
         super();
         this.tracks = tracks;
@@ -70,5 +45,30 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.ViewHolder> 
     @Override
     public int getItemCount() {
         return tracks.size();
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
+        private final TextView textView;
+        private final ImageView imageView;
+        private final Context context;
+
+        public ViewHolder(@NonNull View itemView) {
+            super(itemView);
+            textView = itemView.findViewById(R.id.trackLabel);
+            imageView = itemView.findViewById(R.id.trackImage);
+            context = itemView.getContext();
+        }
+
+        private void update(Track track) {
+            textView.setText(track.toString());
+            Bitmap bitmap = track.computeAndGetBitmap(context);
+            if (bitmap != null) {
+                imageView.setImageBitmap(bitmap);
+            } else {
+                imageView.setImageResource(R.drawable.ic_menu_gallery);
+            }
+            if (player != null)
+                itemView.setOnClickListener(v -> player.play(track));
+        }
     }
 }
