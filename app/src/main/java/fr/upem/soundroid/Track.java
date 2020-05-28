@@ -30,17 +30,19 @@ public class Track implements Comparable<Track>, Serializable {
     private final String title;
     private final String author;
     private final String album;
+    private final String uri;
     private final int count;
     private final long albumId;
     private transient Bitmap bitmap;
 
     private static Map<Long, Bitmap> map = new HashMap<Long, Bitmap>();
 
-    private Track(String path, String title, String author, String album, int count, long album_id) {
+    private Track(String path, String title, String author, String album, String uri, int count, long album_id) {
         this.path = path;
         this.title = title;
         this.author = author;
         this.album = album;
+        this.uri = uri;
         this.count = count;
         this.albumId = album_id;
     }
@@ -54,7 +56,7 @@ public class Track implements Comparable<Track>, Serializable {
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ARTIST),
                 mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_ALBUM),
-                num,
+                "", num,
                 0);
     }
 
@@ -91,6 +93,7 @@ public class Track implements Comparable<Track>, Serializable {
                 MediaStore.Audio.ArtistColumns.ARTIST,
                 MediaStore.Audio.AudioColumns.TRACK,
                 MediaStore.Audio.AlbumColumns.ALBUM_ID,
+                MediaStore.Audio.AudioColumns._ID,
         };
         Cursor c = context.getContentResolver().query(uri, projection, MediaStore.Audio.AudioColumns.IS_MUSIC + " != 0",
                 new String[0], null);
@@ -105,6 +108,8 @@ public class Track implements Comparable<Track>, Serializable {
                 long albumId = c.getLong(5);
 
                 Track t = new Track(path, name, artist, album,
+                        ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                                c.getInt(c.getColumnIndex(MediaStore.Audio.AudioColumns._ID))).toString(),
                         (trackNumber == null || trackNumber.isEmpty()) ? 0 : Integer.parseInt(trackNumber),
                         albumId
                 );
@@ -201,7 +206,7 @@ public class Track implements Comparable<Track>, Serializable {
     }
 
     public Uri toUri() {
-        return Uri.parse(path);
+        return Uri.parse(uri);
     }
 
     public Bitmap computeAndGetBitmap(Context c) {

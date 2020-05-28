@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment {
         root.findViewById(R.id.floatingActionButton).setOnClickListener(v -> permissionScan());
 
         recyclerView = root.findViewById(R.id.recyclerView);
-        trackAdapter = new TrackAdapter(tracks, (MainActivity)getActivity());
+        trackAdapter = new TrackAdapter(tracks, (MainActivity) getActivity());
         recyclerView.setAdapter(trackAdapter);
         recyclerView.setLayoutManager(createLayoutManager());
 
@@ -81,16 +81,18 @@ public class HomeFragment extends Fragment {
 
         });
 
-        if (!load())
+        boolean b = !load();
+        Log.d("debug", String.valueOf(b));
+        if (b)
             permissionScan();
 
         return root;
     }
 
     private void permissionScan() {
+        Log.d("debug", "permissionScan");
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_STORAGE);
-            Toast.makeText(getActivity(), "please allow", Toast.LENGTH_SHORT).show();
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_READ_STORAGE);
         } else {
             scan();
         }
@@ -98,23 +100,26 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        Log.d("debug", "onRequestPermissionsResult");
         if (requestCode == MY_PERMISSIONS_REQUEST_READ_STORAGE) {
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 scan();
             } else {
+                Toast.makeText(getActivity(), "please allow", Toast.LENGTH_SHORT).show();
                 permissionScan();
             }
         }
     }
 
     private void scan() {
+        Log.d("debug", "scanning");
         tracks.clear();
         allTracks.clear();
         Track.index(getActivity(), t -> {
             tracks.add(t);
             allTracks.add(t);
         });
+        Log.d("debug", String.valueOf(trackAdapter));
         if (trackAdapter != null) {
             trackAdapter.notifyDataSetChanged();
         }

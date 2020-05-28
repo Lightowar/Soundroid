@@ -9,15 +9,22 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import java.io.IOException;
+import java.util.function.Consumer;
 
 public class MusicService extends Service {
 
-    public final static String PLAY_ACTION = "play";
+    private interface CallBackListener {
+        public void onPlaying(Track t);
+
+        public void onPause();
+
+        public void onResume();
+    }
 
     private MediaPlayer player;
-
     private IBinder binder = new MusicBinder();
+    private Track currentTrack;
+    private CallBackListener listener;
 
     public class MusicBinder extends Binder {
 
@@ -40,18 +47,37 @@ public class MusicService extends Service {
     public void play(Track t) {
         if (player != null && player.isPlaying()) player.stop();
         player = MediaPlayer.create(MusicService.this, t.toUri());
-        player.start();
+        if (player != null) {
+            currentTrack = t;
+            player.start();
+            if (listener != null)
+                listener.onPlaying(t);
+        } else {
+            Log.e(this.getClass().toString(), "cannot instantiate the media player");
+        }
     }
 
-    public void pause() {
+    public boolean pause() {
+        if (player == null) return false;
         player.pause();
+        return true;
     }
 
-    public void resume() {
+    public boolean resume() {
+        if (player == null) return false;
         player.start();
+        return true;
     }
 
     public boolean isPlaying() {
         return player != null && player.isPlaying();
+    }
+
+    public Track currentlyPlaying() {
+        return currentTrack;
+    }
+
+    public void setOnPlayingListener(CallBackListener listener) {
+        this.listener = listener;
     }
 }

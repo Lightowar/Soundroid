@@ -4,9 +4,11 @@ public interface MusicPlayer {
 
     public void play(Track t);
 
-    public void pause();
+    public boolean pause();
 
-    public void resume();
+    public boolean resume();
 
     public boolean isPlaying();
+
+    public Track currentlyPlaying();
 }
