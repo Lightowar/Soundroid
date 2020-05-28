@@ -9,6 +9,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class MusicService extends Service {
@@ -25,6 +27,11 @@ public class MusicService extends Service {
     private IBinder binder = new MusicBinder();
     private Track currentTrack;
     private CallBackListener listener;
+    private final List<Runnable> lst = new ArrayList<>();
+
+    public void onNewTrackListener(Runnable r) {
+        lst.add(r);
+    }
 
     public class MusicBinder extends Binder {
 
@@ -52,6 +59,7 @@ public class MusicService extends Service {
             player.start();
             if (listener != null)
                 listener.onPlaying(t);
+            for (Runnable r : lst) r.run();
         } else {
             Log.e(this.getClass().toString(), "cannot instantiate the media player");
         }
@@ -79,5 +87,9 @@ public class MusicService extends Service {
 
     public void setOnPlayingListener(CallBackListener listener) {
         this.listener = listener;
+    }
+
+    public void unsub(Runnable r) {
+        lst.remove(r);
     }
 }
