@@ -23,7 +23,7 @@
         </activity>
 
         <service
-            android:enabled="true"
-            android:name="fr.upem.soundroid.MusicService" />
+            android:name="fr.upem.soundroid.MusicService"
+            android:enabled="true" />
     </application>
 </manifest>

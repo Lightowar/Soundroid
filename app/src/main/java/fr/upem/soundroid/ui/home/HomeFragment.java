@@ -35,11 +35,10 @@ import fr.upem.soundroid.TrackAdapter;
 
 public class HomeFragment extends Fragment {
 
-    private HomeViewModel homeViewModel;
-    private EditText searchBar;
-
     private final static String FILE = "tracks";
     private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 0;
+    private HomeViewModel homeViewModel;
+    private EditText searchBar;
     private TrackAdapter trackAdapter;
     private RecyclerView recyclerView;
 

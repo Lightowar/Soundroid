@@ -9,29 +9,12 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
-import java.util.function.Consumer;
-
 public class MusicService extends Service {
-
-    private interface CallBackListener {
-        public void onPlaying(Track t);
-
-        public void onPause();
-
-        public void onResume();
-    }
 
     private MediaPlayer player;
     private IBinder binder = new MusicBinder();
     private Track currentTrack;
     private CallBackListener listener;
-
-    public class MusicBinder extends Binder {
-
-        public MusicService getService() {
-            return MusicService.this;
-        }
-    }
 
     @Override
     public void onCreate() {
@@ -79,5 +62,20 @@ public class MusicService extends Service {
 
     public void setOnPlayingListener(CallBackListener listener) {
         this.listener = listener;
+    }
+
+    private interface CallBackListener {
+        public void onPlaying(Track t);
+
+        public void onPause();
+
+        public void onResume();
+    }
+
+    public class MusicBinder extends Binder {
+
+        public MusicService getService() {
+            return MusicService.this;
+        }
     }
 }

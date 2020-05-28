@@ -25,9 +25,9 @@ public class CurrentMusicTrackFragment extends Fragment {
 
         currentMusicTrackModel =
                 ViewModelProviders.of(this).get(CurrentMusicTrackModel.class);
-        View view =  inflater.inflate(R.layout.fragment_current_music_track, container, false);
+        View view = inflater.inflate(R.layout.fragment_current_music_track, container, false);
 
-        player = (MusicPlayer)getActivity();
+        player = (MusicPlayer) getActivity();
 
         play = view.findViewById(R.id.playImage);
         pause = view.findViewById(R.id.pauseImage);
@@ -37,18 +37,18 @@ public class CurrentMusicTrackFragment extends Fragment {
             pause.setVisibility(View.VISIBLE);
         }
 
-        play.setOnClickListener(v-> {
+        play.setOnClickListener(v -> {
             player.resume();
             play.setVisibility(View.INVISIBLE);
             pause.setVisibility(View.VISIBLE);
         });
 
-        pause.setOnClickListener(v-> {
+        pause.setOnClickListener(v -> {
             player.pause();
             pause.setVisibility(View.INVISIBLE);
             play.setVisibility(View.VISIBLE);
         });
 
-        return  view;
+        return view;
     }
 }
