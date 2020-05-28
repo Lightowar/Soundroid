@@ -9,6 +9,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import java.io.IOException;
+
 public class MusicService extends Service {
 
     public final static String PLAY_ACTION = "play";
@@ -36,8 +38,20 @@ public class MusicService extends Service {
     }
 
     public void play(Track t) {
-        Log.d("debug", "starting track");
+        if (player != null && player.isPlaying()) player.stop();
         player = MediaPlayer.create(MusicService.this, t.toUri());
         player.start();
+    }
+
+    public void pause() {
+        player.pause();
+    }
+
+    public void resume() {
+        player.start();
+    }
+
+    public boolean isPlaying() {
+        return player != null && player.isPlaying();
     }
 }

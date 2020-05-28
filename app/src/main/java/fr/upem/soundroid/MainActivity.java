@@ -97,4 +97,19 @@ public class MainActivity extends AppCompatActivity implements MusicPlayer {
         }
         musicService.play(t);
     }
+
+    @Override
+    public void pause() {
+        musicService.pause();
+    }
+
+    @Override
+    public void resume() {
+        musicService.resume();
+    }
+
+    @Override
+    public boolean isPlaying() {
+        return musicService != null && musicService.isPlaying();
+    }
 }

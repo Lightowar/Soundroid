@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:layout_margin="10dp"
     android:gravity="center|start">
 
     <ImageView
@@ -21,6 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="0"
         android:gravity="center|start"
+        android:paddingLeft="20dp"
         android:text="@string/music_title"
         android:textSize="18sp" />
 

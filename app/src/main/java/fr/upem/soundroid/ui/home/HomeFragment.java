@@ -111,7 +111,6 @@ public class HomeFragment extends Fragment {
     private void scan() {
         tracks.clear();
         allTracks.clear();
-        Log.d("debug", "scanning");
         Track.index(getActivity(), t -> {
             tracks.add(t);
             allTracks.add(t);

@@ -7,7 +7,7 @@
     tools:context=".ui.currentMusicTrack.CurrentMusicTrackFragment">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/currentTrackImage"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/playImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="167dp"
@@ -32,12 +32,29 @@
         android:layout_marginRight="168dp"
         android:layout_marginBottom="20dp"
         android:src="@android:drawable/ic_media_play"
+        android:tint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/pauseImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="167dp"
+        android:layout_marginLeft="167dp"
+        android:layout_marginEnd="168dp"
+        android:layout_marginRight="168dp"
+        android:layout_marginBottom="20dp"
+        android:src="@android:drawable/ic_media_pause"
+        android:tint="#000000"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <ImageView
+        android:id="@+id/forwardImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="36dp"
@@ -46,12 +63,13 @@
         android:layout_marginRight="20dp"
         android:layout_marginBottom="20dp"
         android:src="@android:drawable/ic_media_next"
+        android:tint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView2" />
+        app:layout_constraintStart_toEndOf="@+id/playImage" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/backwardImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_marginStart="20dp"
@@ -60,8 +78,9 @@
         android:layout_marginRight="35dp"
         android:layout_marginBottom="20dp"
         android:src="@android:drawable/ic_media_previous"
+        android:tint="#000000"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView2"
+        app:layout_constraintEnd_toStartOf="@+id/playImage"
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
@@ -74,7 +93,7 @@
         android:layout_marginRight="176dp"
         android:layout_marginBottom="20dp"
         android:text="@string/current_song_title"
-        app:layout_constraintBottom_toTopOf="@+id/imageView2"
+        app:layout_constraintBottom_toTopOf="@+id/playImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
