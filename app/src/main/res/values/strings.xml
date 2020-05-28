@@ -4,14 +4,14 @@
     <string name="nav_header_title">Android Studio</string>
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings">Paramètres</string>
 
     <string name="menu_home">@string/app_name</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_current_music_track">Playing now</string>
+    <string name="menu_gallery">Gallerie</string>
+    <string name="menu_current_music_track">Lecture en cours</string>
 
-    <string name="music_title">Music title</string>
-    <string name="album_cover_image_description">Album cover</string>
+    <string name="music_title">Titre de la musique</string>
+    <string name="album_cover_image_description">Pochette d\'album</string>
     <string name="search_bar_label">Recherche</string>
 
     <string name="current_song_title">-</string>

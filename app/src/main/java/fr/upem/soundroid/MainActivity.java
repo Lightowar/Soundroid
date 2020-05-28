@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -32,29 +31,21 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
 
 import fr.upem.soundroid.ui.currentMusicTrack.CurrentMusicTrackFragment;
 import fr.upem.soundroid.ui.gallery.GalleryFragment;
 import fr.upem.soundroid.ui.home.HomeFragment;
 
 public class MainActivity extends AppCompatActivity implements MusicPlayer {
+    private final static String FILE = "tracks";
+    private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 0;
     private AppBarConfiguration mAppBarConfiguration;
-
     private MusicService musicService;
     private boolean bounded;
-
     private List<Track> allTracks;
-
     private HomeFragment home;
     private CurrentMusicTrackFragment current;
     private GalleryFragment galleryFragment;
-
-    private final static String FILE = "tracks";
-    private static final int MY_PERMISSIONS_REQUEST_READ_STORAGE = 0;
-
     private OnTracksGenerated onTracksGenerated;
 
     private ServiceConnection connection = new ServiceConnection() {
@@ -210,8 +201,7 @@ public class MainActivity extends AppCompatActivity implements MusicPlayer {
     public void consumeAllTracks(OnTracksGenerated c) {
         if (allTracks != null || load()) {
             c.onTracksGenerated(allTracks);
-        }
-        else {
+        } else {
             onTracksGenerated = c;
             permissionScan();
         }

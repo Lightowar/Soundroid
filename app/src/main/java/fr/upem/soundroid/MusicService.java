@@ -11,33 +11,17 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class MusicService extends Service {
 
-    private interface CallBackListener {
-        public void onPlaying(Track t);
-
-        public void onPause();
-
-        public void onResume();
-    }
-
+    private final List<Runnable> lst = new ArrayList<>();
     private MediaPlayer player;
     private IBinder binder = new MusicBinder();
     private Track currentTrack;
     private CallBackListener listener;
-    private final List<Runnable> lst = new ArrayList<>();
 
     public void onNewTrackListener(Runnable r) {
         lst.add(r);
-    }
-
-    public class MusicBinder extends Binder {
-
-        public MusicService getService() {
-            return MusicService.this;
-        }
     }
 
     @Override
@@ -91,5 +75,20 @@ public class MusicService extends Service {
 
     public void unsub(Runnable r) {
         lst.remove(r);
+    }
+
+    private interface CallBackListener {
+        public void onPlaying(Track t);
+
+        public void onPause();
+
+        public void onResume();
+    }
+
+    public class MusicBinder extends Binder {
+
+        public MusicService getService() {
+            return MusicService.this;
+        }
     }
 }

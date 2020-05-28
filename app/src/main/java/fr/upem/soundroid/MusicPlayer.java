@@ -1,7 +1,6 @@
 package fr.upem.soundroid;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public interface MusicPlayer {
 
@@ -15,13 +14,13 @@ public interface MusicPlayer {
 
     public Track currentlyPlaying();
 
-    public interface OnTracksGenerated {
-        public void onTracksGenerated(List<Track> tracks);
-    }
-
     public void consumeAllTracks(OnTracksGenerated c);
 
     public void onNewTrackListener(Runnable r);
 
     public void unsub(Runnable r);
+
+    public interface OnTracksGenerated {
+        public void onTracksGenerated(List<Track> tracks);
+    }
 }

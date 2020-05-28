@@ -24,7 +24,7 @@ public class CurrentMusicTrackFragment extends Fragment {
     private MusicPlayer player;
     private ImageView play, pause, currentTrackImage;
     private TextView textView;
-    private Runnable r = new Runnable (){
+    private Runnable r = new Runnable() {
         @Override
         public void run() {
             update(player.currentlyPlaying());
