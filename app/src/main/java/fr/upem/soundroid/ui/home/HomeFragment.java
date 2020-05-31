@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import fr.upem.soundroid.MainActivity;
@@ -29,6 +30,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
 
     private List<Track> tracks;
+    private List<Track> filtered;
 
     private MusicPlayer player;
 
@@ -45,8 +47,9 @@ public class HomeFragment extends Fragment {
         player.consumeAllTracks(
                 t -> {
                     tracks = t;
+                    filtered = new ArrayList<>(tracks);
                     recyclerView = root.findViewById(R.id.recyclerView);
-                    trackAdapter = new TrackAdapter(tracks, (MainActivity) getActivity());
+                    trackAdapter = new TrackAdapter(filtered, (MainActivity) getActivity());
                     recyclerView.setAdapter(trackAdapter);
                     recyclerView.setLayoutManager(createLayoutManager());
                 });
@@ -63,9 +66,9 @@ public class HomeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s == null) return;
-                tracks.clear();
+                filtered.clear();
                 for (Track t : tracks) {
-                    if (t.filter(s.toString())) tracks.add(t);
+                    if (t.filter(s.toString())) filtered.add(t);
                 }
                 trackAdapter.notifyDataSetChanged();
             }
